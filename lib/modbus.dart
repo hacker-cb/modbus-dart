@@ -85,5 +85,5 @@ abstract class ModbusClient {
 }
 
 ModbusClient createClient(TcpConnector connector) => ModbusClientImpl(connector);
-ModbusClient createTcpClient(address, {int port: 502, ModbusMode mode = ModbusMode.rtu}) =>
+ModbusClient createTcpClient(address, {int port = 502, ModbusMode mode = ModbusMode.rtu}) =>
     ModbusClientImpl(TcpConnector(address, port, mode));
