@@ -25,9 +25,8 @@ class ModbusFunctions {
 }
 
 
-/**
- *  MODBUS Connector.
- */
+
+/// MODBUS Connector.
 abstract class ModbusConnector {
 
   /// Connect will be called from the [ModbusClient] to establish connection
@@ -54,11 +53,7 @@ enum ModbusMode {
   ascii
 }
 
-/**
- * MODBUS client
- *
- *
- */
+/// MODBUS client
 abstract class ModbusClient {
 
   Future<void> connect();

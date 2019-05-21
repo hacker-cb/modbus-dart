@@ -8,10 +8,9 @@ import 'exceptions.dart';
 import 'util.dart';
 
 
-/**
- * MODBUS client
- * http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b.pdf
- */
+
+/// MODBUS client
+/// http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b.pdf
 class ModbusClientImpl extends ModbusClient {
 
   final Logger log = new Logger('ModbusClientImpl');

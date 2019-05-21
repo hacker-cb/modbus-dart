@@ -9,11 +9,9 @@ import 'acii_converter.dart';
 import 'util.dart';
 
 
-/**
- * MODBUS TCP Connector
- *
- * Simple protocol details: https://ipc2u.ru/articles/prostye-resheniya/modbus-tcp/
- */
+
+/// MODBUS TCP Connector
+/// Simple protocol details: https://ipc2u.ru/articles/prostye-resheniya/modbus-tcp/
 class TcpConnector extends ModbusConnector {
 
   final Logger log = new Logger('TcpConnector');
