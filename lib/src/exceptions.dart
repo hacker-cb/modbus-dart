@@ -1,5 +1,3 @@
-
-
 class ModbusExceptionCodes {
   static const illegalFunction = 0x01; // Function Code not Supported
   static const illegalAddress = 0x02; // Output Address not exists
@@ -10,7 +8,6 @@ class ModbusExceptionCodes {
   static const gatewayPathNotAvailableProblem = 0x0A; // Gateway Path not Available
   static const gatewayTargetFailedToResponse = 0x0B; // Target Device Failed to Response
 }
-
 
 /// MODBUS Exception Super Class
 /// Throw when a exception or errors happens in modbus protocol
@@ -50,7 +47,6 @@ class ModbusServerFailureException extends ModbusException {
   ModbusServerFailureException() : super('Server Failure');
 }
 
-
 /// Acknowledge
 /// Throw when modbus server return error response function 0x05
 class ModbusAcknowledgeException extends ModbusException {
@@ -62,7 +58,6 @@ class ModbusAcknowledgeException extends ModbusException {
 class ModbusServerBusyException extends ModbusException {
   ModbusServerBusyException() : super('Server Busy');
 }
-
 
 /// Gateway Problem
 /// Throw when modbus server return error response function 0x0A and 0x0B

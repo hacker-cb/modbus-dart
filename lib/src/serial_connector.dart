@@ -1,15 +1,12 @@
-
-
 import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:modbus/modbus.dart';
 
 class SerialConnector extends ModbusConnector {
-
   String _device;
 
-  SerialConnector(this._device){
+  SerialConnector(this._device) {
     throw UnimplementedError("NOT IMPLEMENTED");
   }
 
@@ -32,13 +29,13 @@ class SerialConnector extends ModbusConnector {
     var crc = BigInt.from(0xffff);
     var poly = BigInt.from(0xa001);
 
-    for(var byte in bytes) {
+    for (var byte in bytes) {
       var bigByte = BigInt.from(byte);
       crc = crc ^ bigByte;
-      for(int n = 0; n <= 7; n++) {
+      for (int n = 0; n <= 7; n++) {
         int carry = crc.toInt() & 0x1;
         crc = crc >> 1;
-        if(carry == 0x1) {
+        if (carry == 0x1) {
           crc = crc ^ poly;
         }
       }
@@ -48,5 +45,4 @@ class SerialConnector extends ModbusConnector {
     ByteData.view(ret.buffer).setUint16(0, crc.toUnsigned(16).toInt());
     return ret;
   }
-
 }

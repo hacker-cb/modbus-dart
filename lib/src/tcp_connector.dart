@@ -8,12 +8,9 @@ import '../modbus.dart';
 import 'acii_converter.dart';
 import 'util.dart';
 
-
-
 /// MODBUS TCP Connector
 /// Simple protocol details: https://ipc2u.ru/articles/prostye-resheniya/modbus-tcp/
 class TcpConnector extends ModbusConnector {
-
   final Logger log = new Logger('TcpConnector');
 
   var _address;
@@ -29,10 +26,7 @@ class TcpConnector extends ModbusConnector {
   @override
   Future<void> connect() async {
     _socket = await Socket.connect(_address, _port);
-    _socket.listen(_onData,
-        onError: onError,
-        onDone: onClose,
-        cancelOnError: true);
+    _socket.listen(_onData, onError: onError, onDone: onClose, cancelOnError: true);
   }
 
   @override
@@ -40,8 +34,7 @@ class TcpConnector extends ModbusConnector {
     return _socket.close();
   }
 
-  void _onData(List<int> tcpData){
-
+  void _onData(List<int> tcpData) {
     if (_mode == ModbusMode.ascii) tcpData = AsciiConverter.fromAscii(tcpData);
 
     log.finest('RECV: ' + dumpHexToString(tcpData));
@@ -51,18 +44,17 @@ class TcpConnector extends ModbusConnector {
     int unitId = view.getUint8(6); // ignore: unused_local_variable
     int function = view.getUint8(7);
 
-    onResponse(function, tcpData.sublist(8, 8 + len - 2/*unitId + function*/ ));
+    onResponse(function, tcpData.sublist(8, 8 + len - 2 /*unitId + function*/));
   }
 
   @override
   void write(int function, Uint8List data) {
-
     _tid++;
 
     Uint8List tcpHeader = Uint8List(7); // Modbus Application Header
     ByteData.view(tcpHeader.buffer)
       ..setUint16(0, _tid, Endian.big)
-      ..setUint16(4, 1/*fn*/ + data.length, Endian.big)
+      ..setUint16(4, 1 /*fn*/ + data.length, Endian.big)
       ..setUint8(6, _unitId);
 
     Uint8List fn = Uint8List(1); // Modbus Application Header
@@ -76,6 +68,4 @@ class TcpConnector extends ModbusConnector {
 
     _socket.add(tcpData);
   }
-
-
 }

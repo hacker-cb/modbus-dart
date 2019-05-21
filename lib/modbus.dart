@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:typed_data';
 import 'src/client.dart';
@@ -10,25 +9,21 @@ typedef void FunctionCallback(int function, Uint8List data);
 typedef void ErrorCallback(error, stackTrace);
 typedef void CloseCallback();
 
-
 class ModbusFunctions {
-  static const readCoils                = 0x01;
-  static const readDiscreteInputs       = 0x02;
-  static const readHoldingRegisters     = 0x03;
-  static const readInputRegisters       = 0x04;
-  static const writeSingleCoil          = 0x05;
-  static const writeSingleRegister      = 0x06;
-  static const readExceptionStatus      = 0x07;
-  static const writeMultipleCoils       = 0x0f;
-  static const writeMultipleRegisters   = 0x10;
-  static const reportSlaveId            = 0x11;
+  static const readCoils = 0x01;
+  static const readDiscreteInputs = 0x02;
+  static const readHoldingRegisters = 0x03;
+  static const readInputRegisters = 0x04;
+  static const writeSingleCoil = 0x05;
+  static const writeSingleRegister = 0x06;
+  static const readExceptionStatus = 0x07;
+  static const writeMultipleCoils = 0x0f;
+  static const writeMultipleRegisters = 0x10;
+  static const reportSlaveId = 0x11;
 }
-
-
 
 /// MODBUS Connector.
 abstract class ModbusConnector {
-
   /// Connect will be called from the [ModbusClient] to establish connection
   Future connect();
 
@@ -48,14 +43,10 @@ abstract class ModbusConnector {
   CloseCallback onClose;
 }
 
-enum ModbusMode {
-  rtu,
-  ascii
-}
+enum ModbusMode { rtu, ascii }
 
 /// MODBUS client
 abstract class ModbusClient {
-
   Future<void> connect();
   Future<void> close();
 
@@ -91,8 +82,8 @@ abstract class ModbusClient {
 
   /// Read multiply registers, function 0x10
   Future<void> writeMultipleRegisters(int address, Uint16List values);
-
 }
 
 ModbusClient createClient(TcpConnector connector) => ModbusClientImpl(connector);
-ModbusClient createTcpClient(address, {int port: 502, ModbusMode mode = ModbusMode.rtu}) => ModbusClientImpl(TcpConnector(address,port,mode));
+ModbusClient createTcpClient(address, {int port: 502, ModbusMode mode = ModbusMode.rtu}) =>
+    ModbusClientImpl(TcpConnector(address, port, mode));
