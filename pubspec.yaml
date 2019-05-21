@@ -1,0 +1,14 @@
+name: modbus
+version: 0.0.1
+author: "Pavel Sokolov <pavel@sokolov.me>"
+homepage: https://github.com/Hacker-CB/modbus-dart
+description: MODBUS dart library.
+
+environment:
+  sdk: ">=2.0.0 <3.0.0"
+
+dependencies:
+  logging: ^0.11.3+2
+
+dev_dependencies:
+  test: ^1.3.0
