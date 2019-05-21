@@ -5,17 +5,6 @@ MODBUS client library
 [![pub package](https://img.shields.io/pub/v/http.svg)](https://pub.dartlang.org/packages/modbus)
 
 
-
-## Getting Started
-
-Add a dependency to your pubspec.yaml
-
-```dart
-dependencies:
-	modbus: ^0.0.1
-```
-
-
 ## Using
 
 import 'package:modbus/modbus.dart' as modbus;
