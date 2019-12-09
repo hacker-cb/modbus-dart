@@ -54,7 +54,7 @@ class TcpConnector extends ModbusConnector {
     Uint8List tcpHeader = Uint8List(7); // Modbus Application Header
     ByteData.view(tcpHeader.buffer)
       ..setUint16(0, _tid, Endian.big)
-      ..setUint16(4, 1 /*fn*/ + data.length, Endian.big)
+      ..setUint16(4, 1 /*unitId*/ + 1 /*fn*/ + data.length, Endian.big)
       ..setUint8(6, _unitId);
 
     Uint8List fn = Uint8List(1); // Modbus Application Header
