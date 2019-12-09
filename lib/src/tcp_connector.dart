@@ -31,7 +31,7 @@ class TcpConnector extends ModbusConnector {
 
   @override
   Future<void> close() {
-    return _socket.close();
+    return _socket.close().then((sock) => sock.destroy());
   }
 
   void _onData(List<int> tcpData) {
