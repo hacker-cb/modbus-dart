@@ -1,5 +1,5 @@
 name: modbus
-version: 0.0.4
+version: 0.0.5
 author: "Pavel Sokolov <pavel@sokolov.me>"
 homepage: https://github.com/Hacker-CB/modbus-dart
 description: MODBUS dart library.
