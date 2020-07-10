@@ -69,28 +69,39 @@ class ModbusClientImpl extends ModbusClient {
     if (data == null) data = Uint8List(0);
     return _executeFunctionImpl(function, data, (responseFunction, responseData) {
       if (responseFunction == function + 0x80) {
-        switch (responseData.elementAt(0)) {
+        var errorCode = responseData.elementAt(0);
+        ModbusException e;
+        switch (errorCode) {
           case ModbusExceptionCodes.illegalFunction:
-            throw ModbusIllegalFunctionException();
+            e = ModbusIllegalFunctionException();
+            break;
           case ModbusExceptionCodes.illegalAddress:
-            throw ModbusIllegalAddressException();
+            e = ModbusIllegalAddressException();
+            break;
           case ModbusExceptionCodes.illegalValue:
-            throw ModbusIllegalDataValueException();
+            e = ModbusIllegalDataValueException();
+            break;
           case ModbusExceptionCodes.serverFailure:
-            throw ModbusServerFailureException();
+            e = ModbusServerFailureException();
+            break;
           case ModbusExceptionCodes.acknowledge:
-            throw ModbusAcknowledgeException();
+            e = ModbusAcknowledgeException();
+            break;
           case ModbusExceptionCodes.serverBusy:
-            throw ModbusServerBusyException();
+            e = ModbusServerBusyException();
+            break;
           case ModbusExceptionCodes.gatewayPathNotAvailableProblem:
           case ModbusExceptionCodes.gatewayTargetFailedToResponse:
-            throw ModbusGatewayProblemException();
+            e = ModbusGatewayProblemException();
+            break;
           default:
+            e = ModbusException("Unknown error code: ${errorCode}");
             break;
         }
+        _completer.completeError(e);
+      } else {
+        _completer.complete(responseData);
       }
-
-      _completer.complete(responseData);
     });
   }
 
