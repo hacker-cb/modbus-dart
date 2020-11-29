@@ -1,3 +1,7 @@
+## 0.0.7
+
+Fix string
+
 ## 0.0.6
 
 Fix exceptions
