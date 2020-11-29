@@ -40,7 +40,7 @@ class ModbusClientImpl extends ModbusClient {
 
   void _onConnectorError(error, stackTrace) {
     _completer?.completeError(error, stackTrace);
-    throw ModbusConnectException("Connector Error: " + error);
+    throw ModbusConnectException("Connector Error: ${error}");
   }
 
   void _onConnectorClose() {
