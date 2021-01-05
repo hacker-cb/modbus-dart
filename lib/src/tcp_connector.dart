@@ -49,8 +49,10 @@ class TcpConnector extends ModbusConnector {
   }
 
   @override
-  void write(int function, Uint8List data) {
+  void write(int function, Uint8List data, [int unitId]) {
     _tid++;
+
+    unitId != null ? _unitId = unitId : null; // If unitId is provided when calling the function, we will use it for the conection
 
     Uint8List tcpHeader = Uint8List(7); // Modbus Application Header
     ByteData.view(tcpHeader.buffer)

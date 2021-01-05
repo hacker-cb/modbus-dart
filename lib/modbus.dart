@@ -31,7 +31,7 @@ abstract class ModbusConnector {
   Future close();
 
   /// Write function with data over connector. Will be called from the [ModbusClientImpl]
-  void write(int function, Uint8List data);
+  void write(int function, Uint8List data, [int unitId]);
 
   /// This should be called by the Connector implementation when response comes from the device
   FunctionCallback onResponse;
@@ -51,7 +51,7 @@ abstract class ModbusClient {
   Future<void> close();
 
   /// Execute custom modbus function
-  Future<Uint8List> executeFunction(int function, [Uint8List data]);
+  Future<Uint8List> executeFunction(int function, [Uint8List data, int unitId]);
 
   /// Report slave ID, function 0x11
   Future<Uint8List> reportSlaveId();
@@ -60,28 +60,28 @@ abstract class ModbusClient {
   Future<int> readExceptionStatus();
 
   /// Read coils, function 0x01
-  Future<List<bool>> readCoils(int address, int amount);
+  Future<List<bool>> readCoils(int address, int amount, [int unitId]);
 
   /// Read discrete inputs, function 0x02
-  Future<List<bool>> readDiscreteInputs(int address, int amount);
+  Future<List<bool>> readDiscreteInputs(int address, int amount, [int unitId]);
 
   /// Read holding registers, function 0x03
-  Future<Uint16List> readHoldingRegisters(int address, int amount);
+  Future<Uint16List> readHoldingRegisters(int address, int amount, [int unitId]);
 
   /// Read input registers, function 0x04
-  Future<Uint16List> readInputRegisters(int address, int amount);
+  Future<Uint16List> readInputRegisters(int address, int amount, [int unitId]);
 
   /// Read single coil, function 0x05
-  Future<bool> writeSingleCoil(int address, bool to_write);
+  Future<bool> writeSingleCoil(int address, bool to_write, [int unitId]);
 
   /// Read single register, function 0x06
-  Future<int> writeSingleRegister(int address, int value);
+  Future<int> writeSingleRegister(int address, int value, [int unitId]);
 
   /// Read multiply coils, function 0x0f
-  Future<void> writeMultipleCoils(int address, List<bool> values);
+  Future<void> writeMultipleCoils(int address, List<bool> values, [int unitId]);
 
   /// Read multiply registers, function 0x10
-  Future<void> writeMultipleRegisters(int address, Uint16List values);
+  Future<void> writeMultipleRegisters(int address, Uint16List values, [int unitId]);
 }
 
 ModbusClient createClient(TcpConnector connector) => ModbusClientImpl(connector);
