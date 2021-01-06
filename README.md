@@ -7,7 +7,7 @@ MODBUS client library
 
 ## Usage
 
-### Single slave (MODBUS/TCP)
+### Single slave (MODBUS/RTU)
 
 ```dart
 import 'package:modbus/modbus.dart' as modbus;
@@ -29,7 +29,7 @@ main(List<String> arguments) async {
 }
 ```
 
-### Multi slaves with one connection (MODBUS/TCP)
+### Multi slaves with one connection (MODBUS/RTU)
 
 ```dart
 import 'package:modbus/modbus.dart' as modbus;
