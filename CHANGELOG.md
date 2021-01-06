@@ -1,3 +1,7 @@
+## 0.1.0
+
+Added multi-slave mode
+
 ## 0.0.7
 
 Fix string

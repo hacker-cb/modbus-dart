@@ -30,6 +30,9 @@ abstract class ModbusConnector {
   /// Will be called from the [ModbusClientImpl]
   Future close();
 
+  /// Set unit ID
+  void setUnitId(int unitId);
+
   /// Write function with data over connector. Will be called from the [ModbusClientImpl]
   void write(int function, Uint8List data);
 
@@ -49,6 +52,9 @@ enum ModbusMode { rtu, ascii }
 abstract class ModbusClient {
   Future<void> connect();
   Future<void> close();
+
+  /// Set unit ID for the next call
+  void setUnitId(int unitId);
 
   /// Execute custom modbus function
   Future<Uint8List> executeFunction(int function, [Uint8List data]);
@@ -84,6 +90,6 @@ abstract class ModbusClient {
   Future<void> writeMultipleRegisters(int address, Uint16List values);
 }
 
-ModbusClient createClient(TcpConnector connector) => ModbusClientImpl(connector);
-ModbusClient createTcpClient(address, {int port = 502, ModbusMode mode = ModbusMode.rtu}) =>
-    ModbusClientImpl(TcpConnector(address, port, mode));
+ModbusClient createClient(TcpConnector connector, {int unitId=1}) => ModbusClientImpl(connector, unitId);
+ModbusClient createTcpClient(address, {int port = 502, ModbusMode mode = ModbusMode.rtu, int unitId=1}) =>
+    ModbusClientImpl(TcpConnector(address, port, mode), unitId);

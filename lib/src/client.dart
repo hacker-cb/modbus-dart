@@ -17,10 +17,11 @@ class ModbusClientImpl extends ModbusClient {
   Completer _completer;
   FunctionCallback _nextDataCallBack;
 
-  ModbusClientImpl(this._connector) {
+  ModbusClientImpl(this._connector, int unitId) {
     _connector.onResponse = _onConnectorData;
     _connector.onError = _onConnectorError;
     _connector.onClose = _onConnectorClose;
+    _connector.setUnitId(unitId);
   }
 
   @override
@@ -31,6 +32,11 @@ class ModbusClientImpl extends ModbusClient {
   @override
   Future<void> close() {
     return _connector.close();
+  }
+
+  @override
+  void setUnitId(int unitId){
+    return _connector.setUnitId(unitId);
   }
 
   void _onConnectorData(int function, Uint8List data) {

@@ -17,7 +17,7 @@ class TcpConnector extends ModbusConnector {
   int _port;
   ModbusMode _mode;
   int _tid = 0; //transaction ID
-  int _unitId = 1; // Always const. //TODO: allow to change (for multiply slaves)?
+  int _unitId;
 
   Socket _socket;
 
@@ -33,6 +33,11 @@ class TcpConnector extends ModbusConnector {
   Future<void> close() async {
     await _socket?.close();
     await _socket?.destroy();
+  }
+
+  @override
+  void setUnitId(int unitId){
+    _unitId = unitId;
   }
 
   void _onData(List<int> tcpData) {

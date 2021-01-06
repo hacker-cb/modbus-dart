@@ -25,6 +25,11 @@ class SerialConnector extends ModbusConnector {
     throw UnimplementedError("NOT IMPLEMENTED");
   }
 
+  @override
+  void setUnitId(int unitId){
+    throw UnimplementedError("NOT IMPLEMENTED");
+  }
+
   Uint8List _crc(Uint8List bytes) {
     var crc = BigInt.from(0xffff);
     var poly = BigInt.from(0xa001);
