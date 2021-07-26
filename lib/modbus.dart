@@ -37,13 +37,13 @@ abstract class ModbusConnector {
   void write(int function, Uint8List data);
 
   /// This should be called by the Connector implementation when response comes from the device
-  FunctionCallback onResponse;
+  late FunctionCallback onResponse;
 
   /// This should be called by the Connector implementation when any error occurs
-  ErrorCallback onError;
+  ErrorCallback? onError;
 
   /// This should be called by the Connector implementation after closing connection (socket close, etc)
-  CloseCallback onClose;
+  CloseCallback? onClose;
 }
 
 enum ModbusMode { rtu, ascii }
@@ -57,7 +57,7 @@ abstract class ModbusClient {
   void setUnitId(int unitId);
 
   /// Execute custom modbus function
-  Future<Uint8List> executeFunction(int function, [Uint8List data]);
+  Future<Uint8List> executeFunction(int function, [Uint8List? data]);
 
   /// Report slave ID, function 0x11
   Future<Uint8List> reportSlaveId();
@@ -66,10 +66,10 @@ abstract class ModbusClient {
   Future<int> readExceptionStatus();
 
   /// Read coils, function 0x01
-  Future<List<bool>> readCoils(int address, int amount);
+  Future<List<bool?>> readCoils(int address, int amount);
 
   /// Read discrete inputs, function 0x02
-  Future<List<bool>> readDiscreteInputs(int address, int amount);
+  Future<List<bool?>> readDiscreteInputs(int address, int amount);
 
   /// Read holding registers, function 0x03
   Future<Uint16List> readHoldingRegisters(int address, int amount);

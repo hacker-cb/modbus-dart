@@ -12,7 +12,7 @@ class AsciiConverter {
     log.finest('From ASCII: ' + str);
     if (str.length % 2 != 0) throw ModbusException("ASCII string is not even count");
     if (!str.endsWith(String.fromCharCodes([0x0d, 0xa]))) throw ModbusException("Invalid ASCII received");
-    List<int> ret = List();
+    List<int> ret = [];
     for (int i = 0; i < str.length - 2 /*without CRLF*/; i += 2) {
       ret.add(int.parse(str.substring(i, i + 2), radix: 16));
     }
