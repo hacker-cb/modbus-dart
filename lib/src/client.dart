@@ -14,8 +14,8 @@ class ModbusClientImpl extends ModbusClient {
 
   ModbusConnector _connector;
 
-  Completer _completer;
-  FunctionCallback _nextDataCallBack;
+  Completer? _completer;
+  FunctionCallback? _nextDataCallBack;
 
   ModbusClientImpl(this._connector, int unitId) {
     _connector.onResponse = _onConnectorData;
@@ -41,7 +41,7 @@ class ModbusClientImpl extends ModbusClient {
 
   void _onConnectorData(int function, Uint8List data) {
     log.finest("RECV: fn: " + function.toRadixString(16).padLeft(2, '0') + "h data: " + dumpHexToString(data));
-    if (_nextDataCallBack != null) _nextDataCallBack(function, data);
+    if (_nextDataCallBack != null) _nextDataCallBack!(function, data);
   }
 
   void _onConnectorError(error, stackTrace) {
@@ -50,8 +50,8 @@ class ModbusClientImpl extends ModbusClient {
   }
 
   void _onConnectorClose() {
-    if (_completer?.isCompleted != true) {
-      _completer.completeError("Connector was closed before operation was completed");
+    if (_completer?.isCompleted == false) {
+      _completer!.completeError("Connector was closed before operation was completed");
       throw ModbusConnectException("Connector was closed before operation was completed");
     }
   }
@@ -67,11 +67,11 @@ class ModbusClientImpl extends ModbusClient {
     _nextDataCallBack = callback;
     _sendData(function, Uint8List.fromList(data));
 
-    return _completer.future;
+    return _completer!.future.then((value) => value as Uint8List);
   }
 
   @override
-  Future<Uint8List> executeFunction(int function, [Uint8List data]) {
+  Future<Uint8List> executeFunction(int function, [Uint8List? data]) {
     if (data == null) data = Uint8List(0);
     return _executeFunctionImpl(function, data, (responseFunction, responseData) {
       if (responseFunction == function + 0x80) {
@@ -104,9 +104,9 @@ class ModbusClientImpl extends ModbusClient {
             e = ModbusException("Unknown error code: ${errorCode}");
             break;
         }
-        _completer.completeError(e);
+        _completer!.completeError(e);
       } else {
-        _completer.complete(responseData);
+        _completer!.complete(responseData);
       }
     });
   }
@@ -124,14 +124,14 @@ class ModbusClientImpl extends ModbusClient {
     return codes;
   }
 
-  Future<List<bool>> _readBits(int function, int address, int amount) async {
+  Future<List<bool?>> _readBits(int function, int address, int amount) async {
     var data = Uint8List(4);
     ByteData.view(data.buffer)..setUint16(0, address)..setUint16(2, amount);
 
     var response = await executeFunction(function, data);
     var responseView = ByteData.view(response.buffer);
 
-    var ret = List<bool>(amount);
+    var ret = List<bool?>.filled(amount, null);
     for (int i = 0; i < amount; i++) {
       ret[i] = ((responseView.getUint8(1 /*byte count*/ + (i / 8).truncate()) >> (i % 8)) & 1) == 1;
     }
@@ -139,14 +139,14 @@ class ModbusClientImpl extends ModbusClient {
   }
 
   @override
-  Future<List<bool>> readCoils(int address, int amount) async {
+  Future<List<bool?>> readCoils(int address, int amount) async {
     if (amount < 1 || amount > 2000) throw ModbusAmountException();
 
     return _readBits(ModbusFunctions.readCoils, address, amount);
   }
 
   @override
-  Future<List<bool>> readDiscreteInputs(int address, int amount) {
+  Future<List<bool?>> readDiscreteInputs(int address, int amount) {
     if (amount < 1 || amount > 2000) throw ModbusAmountException();
 
     return _readBits(ModbusFunctions.readDiscreteInputs, address, amount);
