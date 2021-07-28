@@ -51,6 +51,7 @@ enum ModbusMode { rtu, ascii }
 /// MODBUS client
 abstract class ModbusClient {
   Future<void> connect();
+
   Future<void> close();
 
   /// Set unit ID for the next call
@@ -90,6 +91,9 @@ abstract class ModbusClient {
   Future<void> writeMultipleRegisters(int address, Uint16List values);
 }
 
-ModbusClient createClient(TcpConnector connector, {int unitId=1}) => ModbusClientImpl(connector, unitId);
-ModbusClient createTcpClient(address, {int port = 502, ModbusMode mode = ModbusMode.rtu, int unitId=1}) =>
+ModbusClient createClient(TcpConnector connector, {int unitId = 1}) =>
+    ModbusClientImpl(connector, unitId);
+
+ModbusClient createTcpClient(address,
+        {int port = 502, ModbusMode mode = ModbusMode.rtu, int unitId = 1}) =>
     ModbusClientImpl(TcpConnector(address, port, mode), unitId);
