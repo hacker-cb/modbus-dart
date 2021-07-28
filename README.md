@@ -1,13 +1,13 @@
 # modbus-dart 
 
-MODBUS client library
+Simple Modbus client library for dart. Currently only the TCP connection is supported.
 
 [![pub package](https://img.shields.io/pub/v/http.svg)](https://pub.dartlang.org/packages/modbus)
 
 
 ## Usage
 
-### Single slave (MODBUS/RTU)
+### Single slave (Modbus RTU)
 
 ```dart
 import 'package:modbus/modbus.dart' as modbus;
@@ -15,7 +15,11 @@ import 'package:modbus/modbus.dart' as modbus;
 
 main(List<String> arguments) async {
     
-  var client = modbus.createTcpClient('10.170.1.20', port: 1001, mode: modbus.ModbusMode.rtu);
+  var client = modbus.createTcpClient(
+    '10.170.1.20',
+    port: 1001,
+    mode: modbus.ModbusMode.rtu,
+  );
     
   try {
     await client.connect();
@@ -24,12 +28,12 @@ main(List<String> arguments) async {
     
     print("Slave ID: " + slaveIdResponse);
   } finally {
-      client.close();
+    client.close();
   }
 }
 ```
 
-### Multi slaves with one connection (MODBUS/RTU)
+### Multi slaves with one connection (Modbus RTU)
 
 ```dart
 import 'package:modbus/modbus.dart' as modbus;
@@ -37,7 +41,11 @@ import 'package:modbus/modbus.dart' as modbus;
 
 main(List<String> arguments) async {
     
-  var client = modbus.createTcpClient('10.170.1.20', port: 1001, mode: modbus.ModbusMode.rtu);
+  var client = modbus.createTcpClient(
+    '10.170.1.20',
+    port: 1001,
+    mode: modbus.ModbusMode.rtu,
+  );
     
   try {
     await client.connect();
@@ -52,7 +60,7 @@ main(List<String> arguments) async {
 
     print("Slave ID: " + slaveIdResponse);
   } finally {
-      client.close();
+    client.close();
   }
 }
 ```
@@ -60,4 +68,4 @@ main(List<String> arguments) async {
 
 ## Limitations
 
-SerialConnector is not implemented yet
+SerialConnector is not implemented yet.
