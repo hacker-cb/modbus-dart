@@ -1,15 +1,17 @@
 import 'package:modbus/modbus.dart' as modbus;
 import 'package:logging/logging.dart';
 
-
 main(List<String> arguments) async {
-
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
     print('${rec.level.name}: ${rec.time} [${rec.loggerName}]: ${rec.message}');
   });
 
-  var client = modbus.createTcpClient('10.170.1.20', port: 1001, mode: modbus.ModbusMode.rtu);
+  var client = modbus.createTcpClient(
+    '10.170.1.20',
+    port: 1001,
+    mode: modbus.ModbusMode.rtu,
+  );
 
   try {
     await client.connect();

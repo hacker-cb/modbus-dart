@@ -5,15 +5,19 @@ class ModbusExceptionCodes {
   static const serverFailure = 0x04; // Slave Deive Fails to process request
   static const acknowledge = 0x05; // Service Need Long Time to Execute
   static const serverBusy = 0x06; // Server Was Unable to Accept MB Request PDU
-  static const gatewayPathNotAvailableProblem = 0x0A; // Gateway Path not Available
-  static const gatewayTargetFailedToResponse = 0x0B; // Target Device Failed to Response
+  static const gatewayPathNotAvailableProblem =
+      0x0A; // Gateway Path not Available
+  static const gatewayTargetFailedToResponse =
+      0x0B; // Target Device Failed to Response
 }
 
 /// MODBUS Exception Super Class
 /// Throw when a exception or errors happens in modbus protocol
 class ModbusException implements Exception {
   final String msg;
+
   const ModbusException(this.msg);
+
   String toString() => 'MODBUS ERROR: $msg';
 }
 

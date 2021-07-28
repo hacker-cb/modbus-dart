@@ -26,7 +26,7 @@ class SerialConnector extends ModbusConnector {
   }
 
   @override
-  void setUnitId(int unitId){
+  void setUnitId(int unitId) {
     throw UnimplementedError("NOT IMPLEMENTED");
   }
 
