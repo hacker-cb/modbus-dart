@@ -2,7 +2,7 @@ name: modbus
 version: 0.1.1
 author: "Pavel Sokolov <pavel@sokolov.me>"
 homepage: https://github.com/Hacker-CB/modbus-dart
-description: MODBUS dart library.
+description: Simple Modbus client library for dart. Currently only the TCP connection is supported.
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
