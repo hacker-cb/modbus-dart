@@ -18,14 +18,15 @@ class TcpConnector extends ModbusConnector {
   ModbusMode _mode;
   int _tid = 0; //transaction ID
   late int _unitId;
+  final Duration? timeout;
 
   Socket? _socket;
 
-  TcpConnector(this._address, this._port, this._mode);
+  TcpConnector(this._address, this._port, this._mode, {this.timeout});
 
   @override
   Future<void> connect() async {
-    _socket = await Socket.connect(_address, _port);
+    _socket = await Socket.connect(_address, _port, timeout: this.timeout);
     _socket!.listen(_onData,
         onError: onError, onDone: onClose, cancelOnError: true);
   }
