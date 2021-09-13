@@ -24,6 +24,8 @@ class ModbusFunctions {
 
 /// MODBUS Connector.
 abstract class ModbusConnector {
+  Duration? timeout;
+
   /// Connect will be called from the [ModbusClient] to establish connection
   Future connect();
 
@@ -50,6 +52,8 @@ enum ModbusMode { rtu, ascii }
 
 /// MODBUS client
 abstract class ModbusClient {
+  Duration? timeout;
+
   Future<void> connect();
 
   Future<void> close();
@@ -100,4 +104,5 @@ ModbusClient createTcpClient(address,
         int unitId = 1,
         Duration? timeout}) =>
     ModbusClientImpl(
-        TcpConnector(address, port, mode, timeout: timeout), unitId);
+        TcpConnector(address, port, mode, timeout: timeout), unitId,
+        timeout: timeout);

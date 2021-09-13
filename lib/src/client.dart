@@ -17,11 +17,12 @@ class ModbusClientImpl extends ModbusClient {
   Completer? _completer;
   FunctionCallback? _nextDataCallBack;
 
-  ModbusClientImpl(this._connector, int unitId) {
+  ModbusClientImpl(this._connector, int unitId, {Duration? timeout}) {
     _connector.onResponse = _onConnectorData;
     _connector.onError = _onConnectorError;
     _connector.onClose = _onConnectorClose;
     _connector.setUnitId(unitId);
+    this.timeout = timeout;
   }
 
   @override
@@ -44,7 +45,8 @@ class ModbusClientImpl extends ModbusClient {
         function.toRadixString(16).padLeft(2, '0') +
         "h data: " +
         dumpHexToString(data));
-    if (_nextDataCallBack != null) _nextDataCallBack!(function, data);
+    if (_nextDataCallBack != null && !_completer!.isCompleted)
+      _nextDataCallBack!(function, data);
   }
 
   void _onConnectorError(error, stackTrace) {
@@ -70,13 +72,22 @@ class ModbusClientImpl extends ModbusClient {
   }
 
   Future<Uint8List> _executeFunctionImpl(
-      int function, Uint8List data, FunctionCallback callback) {
+      int function, Uint8List data, FunctionCallback callback) async {
     _completer = Completer<Uint8List>();
 
     _nextDataCallBack = callback;
+
     _sendData(function, Uint8List.fromList(data));
 
-    return _completer!.future.then((value) => value as Uint8List);
+    return _completer!.future
+        .then((value) => value as Uint8List)
+        .timeout(this.timeout ?? Duration(seconds: 60), onTimeout: () {
+      if (!_completer!.isCompleted) {
+        _completer!.completeError(ModbusTimeoutException);
+      }
+
+      throw ModbusTimeoutException();
+    });
   }
 
   @override
@@ -136,7 +147,9 @@ class ModbusClientImpl extends ModbusClient {
 
   Future<List<bool?>> _readBits(int function, int address, int amount) async {
     var data = Uint8List(4);
-    ByteData.view(data.buffer)..setUint16(0, address)..setUint16(2, amount);
+    ByteData.view(data.buffer)
+      ..setUint16(0, address)
+      ..setUint16(2, amount);
 
     var response = await executeFunction(function, data);
     var responseView = ByteData.view(response.buffer);
@@ -168,7 +181,9 @@ class ModbusClientImpl extends ModbusClient {
   Future<Uint16List> _readRegisters(
       int function, int address, int amount) async {
     var data = Uint8List(4);
-    ByteData.view(data.buffer)..setUint16(0, address)..setUint16(2, amount);
+    ByteData.view(data.buffer)
+      ..setUint16(0, address)
+      ..setUint16(2, amount);
 
     var response = await executeFunction(function, data);
 
@@ -212,7 +227,9 @@ class ModbusClientImpl extends ModbusClient {
   @override
   Future<int> writeSingleRegister(int address, int value) async {
     var data = Uint8List(4);
-    ByteData.view(data.buffer)..setUint16(0, address)..setUint16(2, value);
+    ByteData.view(data.buffer)
+      ..setUint16(0, address)
+      ..setUint16(2, value);
 
     var response =
         await executeFunction(ModbusFunctions.writeSingleRegister, data);

@@ -5,6 +5,7 @@ class ModbusExceptionCodes {
   static const serverFailure = 0x04; // Slave Deive Fails to process request
   static const acknowledge = 0x05; // Service Need Long Time to Execute
   static const serverBusy = 0x06; // Server Was Unable to Accept MB Request PDU
+  static const timeout = 0x07; // read、write timeout
   static const gatewayPathNotAvailableProblem =
       0x0A; // Gateway Path not Available
   static const gatewayTargetFailedToResponse =
@@ -61,6 +62,10 @@ class ModbusAcknowledgeException extends ModbusException {
 /// Throw when modbus server return error response function 0x06
 class ModbusServerBusyException extends ModbusException {
   ModbusServerBusyException() : super('Server Busy');
+}
+
+class ModbusTimeoutException extends ModbusException {
+  ModbusTimeoutException() : super('Read or Wirte timeout');
 }
 
 /// Gateway Problem
