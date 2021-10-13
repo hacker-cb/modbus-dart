@@ -14,7 +14,7 @@ class ModbusClientImpl extends ModbusClient {
 
   ModbusConnector _connector;
 
-  Completer? _completer;
+  Completer<Uint8List>? _completer;
   FunctionCallback? _nextDataCallBack;
 
   ModbusClientImpl(this._connector, int unitId) {
@@ -76,7 +76,7 @@ class ModbusClientImpl extends ModbusClient {
     _nextDataCallBack = callback;
     _sendData(function, Uint8List.fromList(data));
 
-    return _completer!.future.then((value) => value as Uint8List);
+    return _completer!.future;
   }
 
   @override
@@ -136,7 +136,9 @@ class ModbusClientImpl extends ModbusClient {
 
   Future<List<bool?>> _readBits(int function, int address, int amount) async {
     var data = Uint8List(4);
-    ByteData.view(data.buffer)..setUint16(0, address)..setUint16(2, amount);
+    ByteData.view(data.buffer)
+      ..setUint16(0, address)
+      ..setUint16(2, amount);
 
     var response = await executeFunction(function, data);
     var responseView = ByteData.view(response.buffer);
@@ -168,7 +170,9 @@ class ModbusClientImpl extends ModbusClient {
   Future<Uint16List> _readRegisters(
       int function, int address, int amount) async {
     var data = Uint8List(4);
-    ByteData.view(data.buffer)..setUint16(0, address)..setUint16(2, amount);
+    ByteData.view(data.buffer)
+      ..setUint16(0, address)
+      ..setUint16(2, amount);
 
     var response = await executeFunction(function, data);
 
@@ -212,7 +216,9 @@ class ModbusClientImpl extends ModbusClient {
   @override
   Future<int> writeSingleRegister(int address, int value) async {
     var data = Uint8List(4);
-    ByteData.view(data.buffer)..setUint16(0, address)..setUint16(2, value);
+    ByteData.view(data.buffer)
+      ..setUint16(0, address)
+      ..setUint16(2, value);
 
     var response =
         await executeFunction(ModbusFunctions.writeSingleRegister, data);
