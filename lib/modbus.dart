@@ -78,16 +78,16 @@ abstract class ModbusClient {
   /// Read input registers, function 0x04
   Future<Uint16List> readInputRegisters(int address, int amount);
 
-  /// Read single coil, function 0x05
+  /// Write single coil, function 0x05
   Future<bool> writeSingleCoil(int address, bool to_write);
 
-  /// Read single register, function 0x06
+  /// Write single register, function 0x06
   Future<int> writeSingleRegister(int address, int value);
 
-  /// Read multiply coils, function 0x0f
+  /// Write multiply coils, function 0x0f
   Future<void> writeMultipleCoils(int address, List<bool> values);
 
-  /// Read multiply registers, function 0x10
+  /// Write multiply registers, function 0x10
   Future<void> writeMultipleRegisters(int address, Uint16List values);
 }
 
