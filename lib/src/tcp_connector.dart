@@ -54,16 +54,14 @@ class TcpConnector extends ModbusConnector {
     int unitId = view.getUint8(6); // ignore: unused_local_variable
     int function = view.getUint8(7);
 
-    // check if frame is complete
+    // check if frame is complete - payload is 2 bytes shorter then length since Modbus length is calculated including unitID and function code
     if (tcpBuffer.length >= (8 + len - 2)) {
-      var payload = tcpBuffer.sublist(8, 8 + len - 2 /*unitId + function*/);
-
+      var payload = tcpBuffer.sublist(8, 8 + len - 2);
       tcpBuffer.removeRange(
-          0, 8 + len); // remove Modbus packet data from buffer
-
+          0, 8 + len - 2); // remove Modbus packet data from buffer
       onResponse(function, Uint8List.fromList(payload));
     } else {
-      // wait and hope that remaining data is in next TCP frame
+      // not enough bytes in buffer - wait and hope that remaining data is in next TCP frame
     }
   }
 
