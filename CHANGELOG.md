@@ -1,3 +1,7 @@
+## 0.2.0
+
+Solve the problem of concurrency
+
 ## 0.1.1
 
 Migrated code to null safety
