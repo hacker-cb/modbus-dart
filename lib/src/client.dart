@@ -17,10 +17,7 @@ class ModbusClientImpl extends ModbusClient {
 
   ModbusConnector _connector;
 
-  Completer<Uint8List>? _completer;
-  FunctionCallback? _nextDataCallBack;
-
-  Map<PendingKey, Handler> _pendingMap = HashMap();
+  Map<PendingKey, PendingCallback> _pendingMap = HashMap();
   Map<PendingKey, Completer> _waitingMap = HashMap();
   Queue<Request> _waitingQueue = DoubleLinkedQueue();
 
@@ -57,7 +54,7 @@ class ModbusClientImpl extends ModbusClient {
     handler?.respond(function, data);
 
     var waiter = _waitingMap.remove(key);
-    log.info('unlock $key');
+    log.finest('unlock $key');
     waiter?.complete();
 
     // if (_nextDataCallBack != null) _nextDataCallBack!(function, data);
@@ -79,11 +76,7 @@ class ModbusClientImpl extends ModbusClient {
 
     _pendingMap.clear();
     _waitingMap.clear();
-    // if (_completer?.isCompleted == false) {
-    //   _completer!
-    //       .completeError("Connector was closed before operation was completed");
-    //   throw ModbusConnectException("Connector was closed before operation was completed");
-    // }
+
   }
 
   void _sendData(int function, Uint8List data) {
@@ -100,15 +93,15 @@ class ModbusClientImpl extends ModbusClient {
     Completer<Uint8List> completer = Completer();
     if (_waitingMap.containsKey(key)) {
       _waitingQueue.addLast(Request(function, data, callback, completer));
-      log.info('waiting queue length ${_waitingQueue.length} key $key');
+      log.finest('waiting queue length ${_waitingQueue.length} key $key');
     } else {
       Completer responseCompleter = Completer();
       _waitingMap[key] = responseCompleter;
 
       _sendData(function, Uint8List.fromList(data));
-      _pendingMap[key] = Handler(completer, callback);
+      _pendingMap[key] = PendingCallback(completer, callback);
 
-      log.info('lock $key');
+      log.finest('lock $key');
       responseCompleter.future.whenComplete(() {
         if (_waitingQueue.isNotEmpty) {
           var request = _waitingQueue.removeFirst();
@@ -122,14 +115,15 @@ class ModbusClientImpl extends ModbusClient {
   void _sendNext(Request request) {
     PendingKey key = PendingKey(request.function);
     if (_waitingMap.containsKey(key)) {
-      _waitingQueue.addLast(request);
-      log.info('enqueue ${_waitingQueue.length} key $key');
+      _waitingQueue.addFirst(request);
+      log.finest('enqueue ${_waitingQueue.length} key $key');
       return;
     }
     Completer responseCompleter = Completer();
     _sendData(request.function, Uint8List.fromList(request.data));
-    _pendingMap[key] = Handler(request.completer, request.callback);
+    _pendingMap[key] = PendingCallback(request.completer, request.callback);
     _waitingMap[key] = responseCompleter;
+    log.finest('lock $key');
     responseCompleter.future.whenComplete(() {
       if (_waitingQueue.isNotEmpty) {
         var next = _waitingQueue.removeFirst();
@@ -359,10 +353,10 @@ class PendingKey {
   }
 
 }
-class Handler {
+class PendingCallback {
   Completer<Uint8List> completer;
   CompleterCallback callback;
-  Handler(this.completer, this.callback);
+  PendingCallback(this.completer, this.callback);
 
   void respond(int function, Uint8List data) {
     callback(completer, function, data);
