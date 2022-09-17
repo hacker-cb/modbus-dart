@@ -21,6 +21,7 @@ class TcpConnector extends ModbusConnector {
   final Duration? timeout;
 
   Socket? _socket;
+  List<int> tcpBuffer = Uint8List(0); //buffer to store fragmented tcpData
 
   TcpConnector(this._address, this._port, this._mode, {this.timeout});
 
@@ -45,15 +46,24 @@ class TcpConnector extends ModbusConnector {
   void _onData(List<int> tcpData) {
     if (_mode == ModbusMode.ascii) tcpData = AsciiConverter.fromAscii(tcpData);
 
-    log.finest('RECV: ' + dumpHexToString(tcpData));
-    var view = ByteData.view(Uint8List.fromList(tcpData).buffer);
+    tcpBuffer =
+        tcpBuffer + tcpData; //add new data to any data already in buffer
+    log.finest('RECV: ' + dumpHexToString(tcpBuffer));
+    var view = ByteData.view(Uint8List.fromList(tcpBuffer).buffer);
     int tid = view.getUint16(0); // ignore: unused_local_variable
     int len = view.getUint16(4);
     int unitId = view.getUint8(6); // ignore: unused_local_variable
     int function = view.getUint8(7);
 
-    onResponse(function,
-        tcpData.sublist(8, 8 + len - 2 /*unitId + function*/) as Uint8List);
+    // check if frame is complete - payload is 2 bytes shorter then length since Modbus length is calculated including unitID and function code
+    if (tcpBuffer.length >= (8 + len - 2)) {
+      var payload = tcpBuffer.sublist(8, 8 + len - 2);
+      tcpBuffer.removeRange(
+          0, 8 + len - 2); // remove Modbus packet data from buffer
+      onResponse(function, Uint8List.fromList(payload));
+    } else {
+      // not enough bytes in buffer - wait and hope that remaining data is in next TCP frame
+    }
   }
 
   @override
