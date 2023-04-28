@@ -99,8 +99,9 @@ ModbusClient createTcpClient(address,
           int port = 502,
           ModbusMode mode = ModbusMode.rtu,
           int unitId = 1,
-          Duration? timeout,
+          Duration? connectionTimeout,
+          Duration? requestTimeout,
           Function(dynamic error, dynamic stackTrace)? onConnectionError
         }) =>
     ModbusClientImpl(
-        TcpConnector(address, port, mode, timeout: timeout), unitId, onConnectionError: onConnectionError);
+        TcpConnector(address, port, mode, timeout: connectionTimeout), unitId, onConnectionError: onConnectionError, requestTimeout: requestTimeout);

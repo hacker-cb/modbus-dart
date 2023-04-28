@@ -20,13 +20,15 @@ class ModbusClientImpl extends ModbusClient {
   Map<PendingKey, PendingCallback> _pendingMap = HashMap();
   Map<PendingKey, Completer> _waitingMap = HashMap();
   Queue<Request> _waitingQueue = DoubleLinkedQueue();
+  Duration? _requestTimeout;
   Function(dynamic error, dynamic stackTrace)? _onConnectionError;
 
-  ModbusClientImpl(this._connector, int unitId, { Function(dynamic error, dynamic stackTrace)? onConnectionError }) {
+  ModbusClientImpl(this._connector, int unitId, { Function(dynamic error, dynamic stackTrace)? onConnectionError, Duration? requestTimeout = const Duration(milliseconds: 6000) }) {
     _connector.onResponse = _onConnectorData;
     _connector.onError = _onConnectorError;
     _connector.onClose = _onConnectorClose;
     _onConnectionError = onConnectionError;
+    _requestTimeout = requestTimeout;
     _connector.setUnitId(unitId);
   }
 
@@ -174,7 +176,8 @@ class ModbusClientImpl extends ModbusClient {
       } else {
         completer!.complete(responseData);
       }
-    });
+    })
+    .timeout(_requestTimeout!);
   }
 
   @override
